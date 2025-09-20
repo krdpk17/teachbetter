@@ -53,7 +53,50 @@ A powerful tool designed to help teachers provide high-quality, personalized, an
    npm install
    ```
 
-3. **Start the application**
+## 🧪 Testing
+
+The project includes a comprehensive test suite to ensure code quality and reliability.
+
+### Running Tests
+
+Run all tests:
+```bash
+npm test
+```
+
+Run unit tests only:
+```bash
+npm run test:unit
+```
+
+Run integration tests only:
+```bash
+npm run test:integration
+```
+
+### Test Coverage
+
+Generate a test coverage report:
+```bash
+npm run test:coverage
+```
+
+This will generate both a text summary in the console and a detailed HTML report in the `coverage` directory. Open `coverage/index.html` in your browser to view the interactive coverage report.
+
+Current test coverage:
+- **Statements**: 51.29%
+- **Branches**: 83.65%
+- **Functions**: 59.23%
+- **Lines**: 51.29%
+
+For CI/CD integration, use:
+```bash
+npm run test:coverage:ci
+```
+
+## 📚 Usage
+
+1. **Start the application**
    ```bash
    npm start
    ```

@@ -20,18 +20,46 @@ if (runUnit) {
   console.log('📋 Running Unit Tests...\n');
   
   try {
+    // Run original FeedbackProcessor tests
     const { default: feedbackProcessorTest } = await import('./unit/FeedbackProcessor.test.js');
     const feedbackPassed = await feedbackProcessorTest.run();
     allPassed = allPassed && feedbackPassed;
+    
+    // Run new FeedbackProcessor tests
+    const { default: newFeedbackProcessorTest } = await import('./unit/FeedbackProcessor.new.test.js');
+    const newTestsPassed = await newFeedbackProcessorTest();
+    allPassed = allPassed && newTestsPassed;
+    
+    // Run advanced FeedbackProcessor tests
+    const { default: advancedFeedbackProcessorTest } = await import('./unit/FeedbackProcessor.advanced.test.js');
+    const advancedTestsPassed = await advancedFeedbackProcessorTest();
+    allPassed = allPassed && advancedTestsPassed;
+    
+    // Run bulk FeedbackProcessor tests
+    const { default: bulkFeedbackProcessorTest } = await import('./unit/FeedbackProcessor.bulk.test.js');
+    const bulkTestsPassed = await bulkFeedbackProcessorTest();
+    allPassed = allPassed && bulkTestsPassed;
+    
+    // Run quality FeedbackProcessor tests
+    const { default: qualityFeedbackProcessorTest } = await import('./unit/FeedbackProcessor.quality.test.js');
+    const qualityTestsPassed = await qualityFeedbackProcessorTest();
+    allPassed = allPassed && qualityTestsPassed;
   } catch (error) {
     console.log(`❌ FeedbackProcessor tests failed to load: ${error.message}`);
+    console.error(error);
     allPassed = false;
   }
 
   try {
-    const { default: fileUploadHandlerTest } = await import('./unit/FileUploadHandler.basic.test.js');
-    const fileUploadPassed = await fileUploadHandlerTest.run();
-    allPassed = allPassed && fileUploadPassed;
+    // Run simple file upload handler tests
+    try {
+      const { default: fileUploadSimpleTest } = await import('./unit/FileUploadHandler.simple.test.js');
+      const fileUploadSimplePassed = await fileUploadSimpleTest.run();
+      allPassed = allPassed && fileUploadSimplePassed;
+    } catch (error) {
+      console.log('❌ FileUploadHandler simple tests failed:', error.message);
+      allPassed = false;
+    }
   } catch (error) {
     console.log(`❌ FileUploadHandler tests failed to load: ${error.message}`);
     allPassed = false;

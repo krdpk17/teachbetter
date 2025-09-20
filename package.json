@@ -12,27 +12,30 @@
     "preview": "vite preview",
     "test": "node tests/run-tests.js",
     "test:unit": "node tests/run-tests.js --unit",
-    "test:integration": "node tests/run-tests.js --integration"
+    "test:integration": "node tests/run-tests.js --integration",
+    "test:coverage": "c8 --all --include='src/**/*.js' --reporter=text --reporter=html node --experimental-vm-modules tests/run-tests.js",
+    "test:coverage:ci": "c8 --all --include='src/**/*.js' --reporter=lcov node --experimental-vm-modules tests/run-tests.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "multer": "^1.4.5-lts.1",
+    "compromise": "^14.10.0",
     "cors": "^2.8.5",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "fs-extra": "^11.2.0",
     "helmet": "^7.1.0",
     "mammoth": "^1.6.0",
-    "pdf-parse": "^1.1.1",
+    "multer": "^1.4.5-lts.1",
     "natural": "^6.10.4",
-    "compromise": "^14.10.0",
+    "path": "^0.12.7",
+    "pdf-parse": "^1.1.1",
     "sentiment": "^5.0.2",
-    "ejs": "^3.1.9",
-    "uuid": "^9.0.1",
-    "fs-extra": "^11.2.0",
-    "path": "^0.12.7"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "c8": "^10.1.3",
     "nodemon": "^3.0.2",
-    "vite": "^5.0.0",
-    "@vitejs/plugin-react": "^4.2.1"
+    "vite": "^5.0.0"
   },
   "keywords": [
     "education",
