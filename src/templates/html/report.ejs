@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Feedback Report</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            line-height: 1.6; 
+            background: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header { 
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white; 
+            padding: 30px; 
+            text-align: center; 
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        .content {
+            padding: 30px;
+        }
+        .student { 
+            border: 1px solid #e9ecef; 
+            margin: 20px 0; 
+            padding: 20px; 
+            border-radius: 8px; 
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .student:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .error { 
+            background: #fff5f5; 
+            border-color: #feb2b2; 
+        }
+        .score { 
+            font-weight: bold; 
+            font-size: 1.2rem;
+        }
+        .score-high { color: #38a169; }
+        .score-medium { color: #d69e2e; }
+        .score-low { color: #e53e3e; }
+        .strengths { 
+            background: #f0fff4; 
+            padding: 15px; 
+            margin: 15px 0; 
+            border-radius: 6px; 
+            border-left: 4px solid #38a169;
+        }
+        .improvements { 
+            background: #fffaf0; 
+            padding: 15px; 
+            margin: 15px 0; 
+            border-radius: 6px; 
+            border-left: 4px solid #d69e2e;
+        }
+        .suggestions {
+            background: #f7fafc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            border-left: 4px solid #4299e1;
+        }
+        .dimensions { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 15px; 
+            margin: 15px 0; 
+        }
+        .dimension { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 6px; 
+            border: 1px solid #e9ecef;
+        }
+        .dimension h4 {
+            margin: 0 0 10px 0;
+            color: #495057;
+            text-transform: capitalize;
+        }
+        .summary { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px; 
+            border-radius: 8px; 
+            margin: 30px 0; 
+        }
+        .summary h2 {
+            margin: 0 0 20px 0;
+            font-size: 1.8rem;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .summary-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .summary-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .statistics { 
+            background: #f8f9fa; 
+            padding: 30px; 
+            border-radius: 8px; 
+            margin: 30px 0; 
+            border: 1px solid #e9ecef;
+        }
+        .statistics h2 {
+            margin: 0 0 20px 0;
+            color: #495057;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        h1, h2, h3 { color: #2d3748; }
+        h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.3rem;
+        }
+        .student-name {
+            color: #2d3748;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        .file-name {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 20px 0 10px 0;
+            color: #495057;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        .error-message {
+            color: #e53e3e;
+            font-weight: 500;
+            background: #fed7d7;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+            margin-top: 30px;
+        }
+        @media (max-width: 768px) {
+            .dimensions {
+                grid-template-columns: 1fr;
+            }
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Bulk Feedback Report</h1>
+            <p>Generated on <%= new Date(generatedAt).toLocaleDateString() %> at <%= new Date(generatedAt).toLocaleTimeString() %></p>
+            <p>Version <%= version %></p>
+        </div>
+
+        <div class="content">
+            <% if (summary.processedStudents > 0) { %>
+            <div class="summary">
+                <h2>📊 Summary</h2>
+                <p><strong>Total Students:</strong> <%= summary.totalStudents %> | 
+                   <strong>Processed:</strong> <%= summary.processedStudents %> | 
+                   <strong>Errors:</strong> <%= summary.errorCount %></p>
+                
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-number"><%= summary.averageScore %></div>
+                        <div>Average Score</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-number"><%= summary.scoreDistribution.high %></div>
+                        <div>High Scores (≥0.8)</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-number"><%= summary.scoreDistribution.medium %></div>
+                        <div>Medium Scores (0.6-0.8)</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-number"><%= summary.scoreDistribution.low %></div>
+                        <div>Low Scores (<0.6)</div>
+                    </div>
+                </div>
+                
+                <% if (summary.commonStrengths.length > 0) { %>
+                <div style="margin-top: 20px;">
+                    <h3>Common Strengths</h3>
+                    <ul>
+                        <% summary.commonStrengths.forEach(strength => { %>
+                        <li><%= strength %></li>
+                        <% }); %>
+                    </ul>
+                </div>
+                <% } %>
+                
+                <% if (summary.commonImprovements.length > 0) { %>
+                <div style="margin-top: 20px;">
+                    <h3>Common Areas for Improvement</h3>
+                    <ul>
+                        <% summary.commonImprovements.forEach(improvement => { %>
+                        <li><%= improvement %></li>
+                        <% }); %>
+                    </ul>
+                </div>
+                <% } %>
+            </div>
+
+            <div class="statistics">
+                <h2>📈 Detailed Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number"><%= statistics.wordCount?.average || 0 %></div>
+                        <div class="stat-label">Avg Word Count</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number"><%= statistics.wordCount?.min || 0 %></div>
+                        <div class="stat-label">Min Word Count</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number"><%= statistics.wordCount?.max || 0 %></div>
+                        <div class="stat-label">Max Word Count</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number"><%= statistics.readability?.average || 0 %></div>
+                        <div class="stat-label">Avg Readability</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number"><%= statistics.overallScore?.average || 0 %></div>
+                        <div class="stat-label">Avg Overall Score</div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+
+            <h2>👥 Individual Student Reports</h2>
+            <% students.forEach(student => { %>
+            <div class="student <%= student.hasError ? 'error' : '' %>">
+                <div class="student-name"><%= student.name %></div>
+                <div class="file-name">File: <%= student.fileName %></div>
+                
+                <% if (student.hasError) { %>
+                <div class="error-message">
+                    <strong>Error:</strong> <%= student.error %>
+                </div>
+                <% } else { %>
+                <div style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <div>
+                        <strong>Overall Score:</strong> 
+                        <span class="score score-<%= student.overallScore >= 0.8 ? 'high' : student.overallScore >= 0.6 ? 'medium' : 'low' %>">
+                            <%= student.overallScore %>
+                        </span>
+                    </div>
+                    <div><strong>Word Count:</strong> <%= student.wordCount %></div>
+                    <div><strong>Readability:</strong> <%= student.readabilityScore %></div>
+                </div>
+                
+                <% if (student.dimensions && Object.keys(student.dimensions).length > 0) { %>
+                <div class="section-title">📊 Evaluation Dimensions</div>
+                <div class="dimensions">
+                    <% Object.entries(student.dimensions).forEach(([dimension, data]) => { %>
+                    <div class="dimension">
+                        <h4><%= dimension.charAt(0).toUpperCase() + dimension.slice(1).replace('_', ' ') %></h4>
+                        <div class="score score-<%= data.score >= 0.8 ? 'high' : data.score >= 0.6 ? 'medium' : 'low' %>">
+                            <%= data.score %>
+                        </div>
+                        <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: #6c757d;">
+                            <%= data.feedback %>
+                        </p>
+                    </div>
+                    <% }); %>
+                </div>
+                <% } %>
+                
+                <% if (student.strengths && student.strengths.length > 0) { %>
+                <div class="strengths">
+                    <h4>✅ Strengths</h4>
+                    <ul>
+                        <% student.strengths.forEach(strength => { %>
+                        <li><%= strength.description || strength %></li>
+                        <% }); %>
+                    </ul>
+                </div>
+                <% } %>
+                
+                <% if (student.improvements && student.improvements.length > 0) { %>
+                <div class="improvements">
+                    <h4>🔧 Areas for Improvement</h4>
+                    <ul>
+                        <% student.improvements.forEach(improvement => { %>
+                        <li>
+                            <strong><%= improvement.dimension.replace('_', ' ') %>:</strong> 
+                            <%= improvement.description %>
+                            <% if (improvement.priority) { %>
+                            <span style="color: #d69e2e; font-size: 0.8rem;">
+                                (<%= improvement.priority %> priority)
+                            </span>
+                            <% } %>
+                        </li>
+                        <% }); %>
+                    </ul>
+                </div>
+                <% } %>
+                
+                <% if (student.suggestions && student.suggestions.length > 0) { %>
+                <div class="suggestions">
+                    <h4>💡 Specific Suggestions</h4>
+                    <ul>
+                        <% student.suggestions.forEach(suggestion => { %>
+                        <li>
+                            <strong><%= suggestion.category %>:</strong> 
+                            <%= suggestion.suggestion %>
+                            <% if (suggestion.priority) { %>
+                            <span style="color: #4299e1; font-size: 0.8rem;">
+                                (<%= suggestion.priority %> priority)
+                            </span>
+                            <% } %>
+                        </li>
+                        <% }); %>
+                    </ul>
+                </div>
+                <% } %>
+                <% } %>
+            </div>
+            <% }); %>
+        </div>
+
+        <div class="footer">
+            <p>Generated by Bulk Feedback Generator v<%= version %></p>
+            <p>This report was automatically generated and provides suggestions for improvement. 
+               Please review and customize feedback as needed for your specific teaching context.</p>
+        </div>
+    </div>
+</body>
+</html>
+

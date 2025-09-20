@@ -1,0 +1,62 @@
+{
+  "server": {
+    "port": 3000,
+    "host": "localhost"
+  },
+  "fileUpload": {
+    "maxFileSize": "10MB",
+    "maxFiles": 50,
+    "allowedTypes": [
+      "text/plain",
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/msword"
+    ],
+    "allowedExtensions": [".txt", ".pdf", ".docx", ".doc"]
+  },
+  "analysis": {
+    "defaultAssignmentType": "general",
+    "defaultEvaluationCriteria": [
+      "structure",
+      "creativity", 
+      "accuracy",
+      "presentation"
+    ],
+    "supportedAssignmentTypes": [
+      "essay",
+      "worksheet", 
+      "report",
+      "creative",
+      "analysis",
+      "general"
+    ],
+    "supportedDimensions": [
+      "structure",
+      "creativity",
+      "accuracy", 
+      "presentation",
+      "critical_thinking",
+      "originality",
+      "clarity",
+      "depth"
+    ]
+  },
+  "reports": {
+    "defaultFormat": "html",
+    "supportedFormats": ["html", "json", "csv", "pdf"],
+    "outputDirectory": "output",
+    "templatesDirectory": "src/templates"
+  },
+  "feedback": {
+    "scoreThresholds": {
+      "high": 0.8,
+      "medium": 0.6,
+      "low": 0.4
+    },
+    "maxSuggestionsPerStudent": 10,
+    "includeDetailedAnalysis": true,
+    "includeStrengths": true,
+    "includeImprovements": true
+  }
+}
+
