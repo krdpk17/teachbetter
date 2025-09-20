@@ -77,7 +77,13 @@
         }
 
         .file-input {
-            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
         }
 
         .upload-btn {
@@ -221,11 +227,515 @@
         }
 
         .results-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            margin: 30px auto;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             display: none;
+            max-width: 1200px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eaeef2;
+        }
+        
+        .results-header h2 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .results-header p {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .result-item {
+            background: #fff;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
+        }
+        
+        .result-item h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eaeef2;
+        }
+        
+        .overall-score {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .score-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+            justify-content: center;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #495057;
+            margin-right: 8px;
+        }
+        
+        .legend-color {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: 5px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .overall-score h4 {
+            margin-top: 0;
+            color: #495057;
+            font-size: 1.1rem;
+        }
+        
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .dimension-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid #4a6baf;
+        }
+        
+        .dimension-card h4 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .score-display {
+            margin: 1rem 0;
+        }
+        
+        .score-bar {
+            height: 24px;
+            background: #e9ecef;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        .score-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: all 0.5s ease;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Score-based colors with descriptive names */
+        .score-fill[data-score="1"] { 
+            background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+            --score-label: 'Needs Work';
+        }
+        .score-fill[data-score="2"] { 
+            background: linear-gradient(90deg, #ff9e4f, #ffb347);
+            --score-label: 'Developing';
+        }
+        .score-fill[data-score="3"] { 
+            background: linear-gradient(90deg, #ffd166, #ffde7d);
+            --score-label: 'Adequate';
+        }
+        .score-fill[data-score="4"] { 
+            background: linear-gradient(90deg, #06d6a0, #4cc9f0);
+            --score-label: 'Strong';
+        }
+        .score-fill[data-score="5"] { 
+            background: linear-gradient(90deg, #4cc9f0, #4361ee);
+            --score-label: 'Excellent';
+        }
+        
+        /* Score label */
+        .score-fill::after {
+            content: var(--score-label);
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #000000;  /* Changed from white to black for better visibility */
+            font-size: 0.8rem;
+            font-weight: 600;  /* Slightly bolder for better readability */
+            text-shadow: 0 1px 1px rgba(255,255,255,0.7);  /* White shadow for contrast */
+        }
+        
+        /* Score indicator dot */
+        .score-indicator {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            right: -6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .score-text {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .feedback {
+            color: #495057;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-top: 0.75rem;
+        }
+        
+        .improvement-areas, .suggestions, .grammar-issues {
+            margin: 2rem 0;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eaeef2;
+        }
+        
+        .improvement-areas h4, .suggestions h4, .grammar-issues h4 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 1.25rem;
+        }
+        
+        .improvement-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .improvement-list li {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 6px;
+            background: #f8f9fa;
+            border-left: 4px solid #6c757d;
+        }
+        
+        .priority-high {
+            border-left-color: #dc3545 !important;
+        }
+        
+        .priority-medium {
+            border-left-color: #ffc107 !important;
+        }
+        
+        .priority-low {
+            border-left-color: #28a745 !important;
+        }
+        
+        .suggestions-list {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+        
+        .suggestion {
+            background: #f8f9fa;
+            padding: 1.25rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .suggestion h5 {
+            margin: 0 0 0.75rem 0;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .suggestion .priority {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        
+        .suggestion .priority.high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .suggestion .priority.medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .suggestion .priority.low {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .suggestion p {
+            margin: 0.5rem 0 0 0;
+            color: #495057;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .specific-areas {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px dashed #dee2e6;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .grammar-issues .issue {
+            background: #fff8f8;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .issue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .issue-type {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            margin-right: 0.5rem;
+            text-transform: capitalize;
+        }
+        
+        .issue-count {
+            background: #f0f0f0;
+            color: #666;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .issue-message {
+            margin: 0.5rem 0;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .issue-examples {
+            margin-top: 0.5rem;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px dashed #e0e0e0;
+            padding-top: 0.5rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .issue-examples.collapsed {
+            max-height: 0 !important;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            border: none;
+        }
+        
+        .toggle-examples {
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.7rem;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .toggle-examples:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+        
+        .issue-examples ul {
+            margin: 0.25rem 0 0 1rem;
+            padding: 0;
+        }
+        
+        .issue-examples li {
+            margin-bottom: 0.25rem;
+            list-style-type: none;
+            position: relative;
+            padding-left: 1rem;
+        }
+        
+        .issue-examples li:before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #999;
+        }
+        
+        .examples-label {
+            font-size: 0.8em;
+            color: #888;
+            font-style: italic;
+        }
+        
+        .grammar-issues .issue-type {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            margin-bottom: 0.5rem;
+            text-transform: capitalize;
+        }
+        
+        .grammar-issues p {
+            margin: 0.25rem 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .grammar-issues .suggestion {
+            color: #28a745;
+            font-style: italic;
+            margin-top: 0.5rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid #28a745;
+        }
+        
+        .more-issues {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin: 0.5rem 0 0 0;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .results-section {
+                padding: 1.5rem 1rem;
+                margin: 1rem;
+            }
+            
+            .dimensions-grid, .suggestions-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-item {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .feedback-item {
+            margin-bottom: 1rem;
+        }
+
+        .dimension {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+            text-transform: capitalize;
+        }
+
+        .score-bar {
+            height: 24px;
+            background: #e9ecef;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: #4a6baf;
+            border-radius: 12px;
+            transition: width 0.3s ease;
+        }
+
+        .score-text {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .overall-feedback, .suggestions {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .suggestions ul {
+            margin-top: 0.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .suggestions li {
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+
+        .error-message {
+            color: #dc3545;
+            background: #fff5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
         }
 
         .results-section.show {
@@ -342,10 +852,12 @@
                 <p style="font-size: 0.9rem; color: #6c757d; margin-top: 10px;">
                     Supported formats: TXT, PDF, DOCX, DOC (Max 10MB per file)
                 </p>
-                <input type="file" id="fileInput" class="file-input" multiple accept=".txt,.pdf,.docx,.doc">
-                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                    Choose Files
-                </button>
+                <div style="position: relative; display: inline-block;">
+                    <button class="upload-btn">
+                        Choose Files
+                    </button>
+                    <input type="file" id="fileInput" class="file-input" multiple accept=".txt,.pdf,.docx,.doc">
+                </div>
             </div>
 
             <div class="file-list" id="fileList" style="display: none;">
@@ -444,30 +956,53 @@
         let selectedFiles = [];
 
         // File input handling
-        document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+        const fileInput = document.getElementById('fileInput');
+        if (!fileInput) {
+            console.error('File input element not found!');
+        } else {
+            fileInput.addEventListener('change', handleFileSelect);
+            console.log('File input event listener added');
+        }
         
         // Drag and drop handling
         const uploadSection = document.getElementById('uploadSection');
-        
-        uploadSection.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadSection.classList.add('dragover');
-        });
-        
-        uploadSection.addEventListener('dragleave', () => {
-            uploadSection.classList.remove('dragover');
-        });
-        
-        uploadSection.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadSection.classList.remove('dragover');
-            handleFileSelect({ target: { files: e.dataTransfer.files } });
-        });
+        if (!uploadSection) {
+            console.error('Upload section element not found!');
+        } else {
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.classList.add('dragover');
+            });
+            
+            uploadSection.addEventListener('dragleave', () => {
+                uploadSection.classList.remove('dragover');
+            });
+            
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.classList.remove('dragover');
+                if (e.dataTransfer && e.dataTransfer.files) {
+                    console.log('Files dropped:', e.dataTransfer.files);
+                    handleFileSelect({ target: { files: e.dataTransfer.files } });
+                }
+            });
+        }
 
         function handleFileSelect(event) {
-            const files = Array.from(event.target.files);
-            selectedFiles = [...selectedFiles, ...files];
-            updateFileList();
+            console.log('File select event triggered', event);
+            if (!event || !event.target || !event.target.files) {
+                console.error('Invalid file select event:', event);
+                return;
+            }
+            
+            try {
+                const files = Array.from(event.target.files);
+                console.log('Selected files:', files);
+                selectedFiles = [...selectedFiles, ...files];
+                updateFileList();
+            } catch (error) {
+                console.error('Error handling file selection:', error);
+            }
         }
 
         function updateFileList() {
@@ -527,77 +1062,225 @@
             try {
                 // Prepare form data
                 const formData = new FormData();
-                selectedFiles.forEach(file => {
-                    formData.append('files', file);
-                });
+                
+                // Add files to form data
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    formData.append('files', selectedFiles[i]);
+                }
 
                 // Get options
-                const assignmentType = document.getElementById('assignmentType').value;
-                const evaluationCriteria = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-                    .map(cb => cb.id);
-                const reportFormat = document.getElementById('reportFormat').value;
-                const includeSuggestions = document.getElementById('includeSuggestions').checked;
+                const assignmentTypeValue = document.getElementById('assignmentType').value;
+                const evaluationCriteria = document.querySelectorAll('input[type="checkbox"]:checked');
+                const evaluationCriteriaValues = Array.from(evaluationCriteria).map(cb => cb.id);
+                const reportFormatValue = 'html'; // Default format
+                const includeSuggestionsValue = true; // Default to true
 
                 // Add options to form data
-                formData.append('assignmentType', assignmentType);
-                formData.append('evaluationCriteria', JSON.stringify(evaluationCriteria));
-                formData.append('reportFormat', reportFormat);
-                formData.append('includeSuggestions', includeSuggestions);
+                formData.append('assignmentType', assignmentTypeValue);
+                formData.append('evaluationCriteria', JSON.stringify(evaluationCriteriaValues));
+                formData.append('reportFormat', reportFormatValue);
+                formData.append('includeSuggestions', includeSuggestionsValue);
 
                 // Process files
                 const response = await fetch('/api/upload', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    // Don't set Content-Type header, let the browser set it with the correct boundary
                 });
 
                 const result = await response.json();
+                console.log('Server response:', JSON.stringify(result, null, 2));
 
                 if (!response.ok) {
                     throw new Error(result.error || 'Failed to process files');
                 }
-
-                // Generate report
-                const reportResponse = await fetch('/api/generate-report', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        analysisResults: result.results,
-                        reportFormat: reportFormat,
-                        includeSuggestions: includeSuggestions
-                    })
-                });
-
-                const reportResult = await reportResponse.json();
-
-                if (!reportResponse.ok) {
-                    throw new Error(reportResult.error || 'Failed to generate report');
+                
+                if (!result.results || !Array.isArray(result.results)) {
+                    console.error('Invalid results format:', result);
+                    throw new Error('Invalid response format from server');
                 }
 
-                // Show success
+                // Display results
                 loadingSection.style.display = 'none';
                 successSection.style.display = 'block';
+                
+                // Generate HTML for each result
+                const resultsHtml = result.results.map(item => {
+                    const analysis = item.analysis;
+                    const dimensionScores = analysis.dimensionScores || {};
+                    const feedbackSuggestions = analysis.feedbackSuggestions || [];
+                    const improvementAreas = analysis.improvementAreas || [];
+                    const grammarIssues = analysis.textAnalysis?.grammarIssues || [];
+                    
+                    // Create dimension score cards
+                    const dimensionCards = Object.entries(dimensionScores).map(([dimension, data]) => {
+                        const score = data.score || 0;
+                        const feedback = data.feedback || '';
+                        const scorePercentage = (score * 100).toFixed(0);
+                        
+                        return `
+                            <div class="dimension-card">
+                                <h4>${dimension.charAt(0).toUpperCase() + dimension.slice(1)}</h4>
+                                <div class="score-display">
+                                    <div class="score-bar">
+                                        <div class="score-fill" data-score="${Math.round(score * 5)}" style="width: ${score * 20}%;">
+    <div class="score-indicator"></div>
+</div>
+<span class="score-text">${(score * 5).toFixed(1)}/5 (${['Needs Work', 'Developing', 'Adequate', 'Strong', 'Excellent'][Math.round(score * 5) - 1] || ''})</span>
+                                    </div>
+                                </div>
+                                <div class="feedback">${feedback}</div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    // Create improvement areas list
+                    const improvementList = improvementAreas.length > 0 ? `
+                        <div class="improvement-areas">
+                            <h4>Areas for Improvement</h4>
+                            <ul class="improvement-list">
+                                ${improvementAreas.map(area => `
+                                    <li class="priority-${area.priority || 'medium'}">
+                                        <strong>${area.dimension}:</strong> ${area.description}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    ` : '';
+                    
+                    // Group similar grammar issues with better context
+                    const groupedIssues = grammarIssues.reduce((groups, issue) => {
+                        const key = `${issue.type || 'other'}_${issue.message || ''}`;
+                        const context = issue.context || '';
+                        const example = context.trim() ? 
+                            context.split('\n')[0].substring(0, 100) + (context.length > 100 ? '...' : '') : 
+                            'Example not available';
+                            
+                        if (!groups[key]) {
+                            groups[key] = {
+                                type: issue.type || 'issue',
+                                message: formatIssueMessage(issue.type, issue.message || 'Issue detected'),
+                                suggestion: formatSuggestion(issue.suggestion, issue.type),
+                                count: 1,
+                                examples: [example],
+                                showExamples: true
+                            };
+                        } else {
+                            groups[key].count++;
+                            if (groups[key].examples.length < 3 && example !== 'Example not available') {
+                                // Only add unique examples
+                                if (!groups[key].examples.includes(example)) {
+                                    groups[key].examples.push(example);
+                                }
+                            }
+                        }
+                        return groups;
+                    }, {});
+
+                    // Create grammar issues section
+                    const grammarIssuesSection = Object.keys(groupedIssues).length > 0 ? `
+                        <div class="grammar-issues">
+                            <h4>Grammar & Style Issues (${grammarIssues.length} found)</h4>
+                            <div class="issues-list">
+                                ${Object.values(groupedIssues).slice(0, 5).map(issue => {
+                                    const showExamples = issue.examples && issue.examples.length > 0 && issue.examples[0] !== 'Example not available';
+                                    return `
+                                    <div class="issue">
+                                        <div class="issue-header">
+                                            <div>
+                                                <span class="issue-type">${issue.type}</span>
+                                                ${issue.count > 1 ? `<span class="issue-count">${issue.count} issues</span>` : ''}
+                                            </div>
+                                            ${showExamples ? 
+                                                `<button class="toggle-examples" onclick="this.parentNode.parentNode.querySelector('.issue-examples').classList.toggle('collapsed')">
+                                                    ${issue.showExamples ? 'Hide' : 'Show'} Examples
+                                                </button>` : ''
+                                            }
+                                        </div>
+                                        <p class="issue-message">${issue.message}</p>
+                                        <p class="suggestion"><strong>How to fix:</strong> ${issue.suggestion}</p>
+                                        ${showExamples ? `
+                                            <div class="issue-examples ${issue.showExamples ? '' : 'collapsed'}">
+                                                <span class="examples-label">Examples from your text:</span>
+                                                <ul>
+                                                    ${issue.examples.map(ex => 
+                                                        `<li>"${ex}"</li>`
+                                                    ).join('')}
+                                                </ul>
+                                            </div>
+                                        ` : ''}
+                                    </div>`;
+                                }).join('')}
+                                ${Object.keys(groupedIssues).length > 5 ? `
+                                    <p class="more-issues">+ ${Object.keys(groupedIssues).length - 5} more issue types found</p>
+                                ` : ''}
+                            </div>
+                        </div>
+                    ` : '';
+                    
+                    // Create suggestions section
+                    const suggestionsSection = feedbackSuggestions.length > 0 ? `
+                        <div class="suggestions">
+                            <h4>Feedback Suggestions</h4>
+                            <div class="suggestions-list">
+                                ${feedbackSuggestions.map(suggestion => `
+                                    <div class="suggestion">
+                                        <h5>${suggestion.category} <span class="priority ${suggestion.priority}">${suggestion.priority}</span></h5>
+                                        <p>${suggestion.suggestion}</p>
+                                        ${suggestion.specificAreas ? `
+                                            <div class="specific-areas">
+                                                <strong>Focus on:</strong> 
+                                                ${suggestion.specificAreas.join(', ')}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : '';
+                    
+                    return `
+                        <div class="result-item">
+                            <h3>${item.fileName || 'Assignment'}</h3>
+                            
+                            <div class="overall-score">
+                                <div class="score-legend">
+                                    <span class="legend-item"><span class="legend-color" style="background: linear-gradient(90deg, #4cc9f0, #4361ee)"></span>5/5 - Excellent</span>
+                                    <span class="legend-item"><span class="legend-color" style="background: linear-gradient(90deg, #06d6a0, #4cc9f0)"></span>4/5 - Strong</span>
+                                    <span class="legend-item"><span class="legend-color" style="background: linear-gradient(90deg, #ffd166, #ffde7d)"></span>3/5 - Adequate</span>
+                                    <span class="legend-item"><span class="legend-color" style="background: linear-gradient(90deg, #ff9e4f, #ffb347)"></span>2/5 - Developing</span>
+                                    <span class="legend-item"><span class="legend-color" style="background: linear-gradient(90deg, #ff6b6b, #ff8e8e)"></span>1/5 - Needs Work</span>
+                                </div>
+                                <h4>Overall Score</h4>
+                                <div class="score-display">
+                                    <div class="score-bar">
+                                        <div class="score-fill" data-score="${Math.round((analysis.assignmentAnalysis?.overallScore || 0) * 5)}" style="width: ${(analysis.assignmentAnalysis?.overallScore || 0) * 20}%;">
+    <div class="score-indicator"></div>
+</div>
+<span class="score-text">${((analysis.assignmentAnalysis?.overallScore || 0) * 5).toFixed(1)}/5 (${['Needs Work', 'Developing', 'Adequate', 'Strong', 'Excellent'][Math.round((analysis.assignmentAnalysis?.overallScore || 0) * 5) - 1] || ''})</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="dimensions-grid">
+                                ${dimensionCards}
+                            </div>
+                            
+                            ${improvementList}
+                            ${grammarIssuesSection}
+                            ${suggestionsSection}
+                        </div>
+                    `;
+                }).join('');
+
                 successSection.innerHTML = `
-                    <h3>✅ Processing Complete!</h3>
-                    <p>Successfully processed ${result.processedCount} assignments.</p>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-number">${result.processedCount}</div>
-                            <div class="stat-label">Files Processed</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">${reportResult.report.fileName}</div>
-                            <div class="stat-label">Report Generated</div>
-                        </div>
+                    <div class="results-header">
+                        <h2>✅ Feedback Report</h2>
+                        <p>Successfully processed ${result.processedCount || selectedFiles.length} assignment(s).</p>
+                        <button onclick="window.location.reload()" class="process-btn">Process New Files</button>
                     </div>
-                    <div style="margin-top: 20px;">
-                        <a href="${reportResult.report.downloadUrl}" class="download-btn" download>
-                            📥 Download Report
-                        </a>
-                        <button class="download-btn" onclick="viewReport('${reportResult.report.downloadUrl}')">
-                            👁️ View Report
-                        </button>
+                    <div class="results-container">
+                        ${resultsHtml}
                     </div>
                 `;
 
@@ -629,7 +1312,42 @@
                 console.error('Failed to load supported types:', error);
             }
         });
+
+        // Helper function to format issue messages
+        function formatIssueMessage(type, message) {
+            const messages = {
+                'capitalization': 'Sentences should start with a capital letter',
+                'run-on': 'Run-on sentence detected',
+                'spelling': 'Possible spelling mistake',
+                'punctuation': 'Punctuation issue',
+                'wordiness': 'Wordy or redundant expression',
+                'passive': 'Passive voice used',
+                'clarity': 'Unclear expression',
+                'agreement': 'Subject-verb agreement issue'
+            };
+            return messages[type] || message;
+        }
+        
+        // Helper function to format suggestions
+        function formatSuggestion(suggestion, type) {
+            if (suggestion) return suggestion;
+            
+            const suggestions = {
+                'capitalization': 'Capitalize the first letter of each sentence',
+                'run-on': 'Consider breaking into shorter, clearer sentences',
+                'spelling': 'Check the spelling of this word',
+                'punctuation': 'Review punctuation usage',
+                'wordiness': 'Consider making this more concise',
+                'passive': 'Consider using active voice for clarity',
+                'clarity': 'Consider rephrasing for better clarity',
+                'agreement': 'Ensure subject and verb agree in number'
+            };
+            return suggestions[type] || 'Review this for potential improvements';
+        }
+        
+        // Make functions available in global scope
+        window.formatIssueMessage = formatIssueMessage;
+        window.formatSuggestion = formatSuggestion;
     </script>
 </body>
 </html>
-

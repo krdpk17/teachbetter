@@ -1,0 +1,29 @@
+--- node_modules/pdf-parse/index.js
++++ node_modules/pdf-parse/index.js
+@@ -10,10 +10,6 @@
+ 
+ var _isPdf = require(./lib/is-pdf);
+ 
+-var _test = require(./test/data/05-versions-space.pdf);
+-
+-var _test2 = _interopRequireDefault(_test);
+-
+ var _utils = require(./lib/utils);
+ 
+ var _version = require(./lib/version);
+@@ -20,8 +16,6 @@
+ 
+ var _babelPluginPdfParse = require(babel-plugin-pdf-parse);
+ 
+-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+-
+ function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+ 
+ 
+ var PDFDataRangeTransport = function PDFDataRangeTransport() {
+-  var length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _test2.default.length;
+-  var initialData = arguments[1];
+ 
+   _classCallCheck(this, PDFDataRangeTransport);
+ 
+

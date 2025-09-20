@@ -21,28 +21,54 @@ export class FeedbackProcessor {
    * @returns {Array} Array of analysis results
    */
   async processBulkAssignments(files, options = {}) {
-    const results = [];
+    if (!Array.isArray(files) || files.length === 0) {
+      throw new Error('No files provided for processing');
+    }
+
+    console.log(`Processing ${files.length} files with options:`, options);
     
-    for (const file of files) {
+    const results = [];
+    let successCount = 0;
+    
+    for (const [index, file] of files.entries()) {
+      const fileInfo = {
+        name: file.originalname || file.name || `file-${index + 1}`,
+        size: file.size || 0,
+        type: file.mimetype || 'unknown'
+      };
+      
+      console.log(`Processing file ${index + 1}/${files.length}:`, fileInfo.name);
+      
       try {
         const analysis = await this.processSingleAssignment(file, options);
-        results.push({
-          fileName: file.name,
-          studentName: this.extractStudentName(file.name),
+        const result = {
+          fileName: fileInfo.name,
+          studentName: this.extractStudentName(fileInfo.name),
           analysis: analysis,
+          status: 'success',
           timestamp: new Date().toISOString()
-        });
+        };
+        
+        results.push(result);
+        successCount++;
+        console.log(`✅ Successfully processed: ${fileInfo.name}`);
+        
       } catch (error) {
-        console.error(`Error processing ${file.name}:`, error);
-        results.push({
-          fileName: file.name,
-          studentName: this.extractStudentName(file.name),
+        console.error(`❌ Error processing ${fileInfo.name}:`, error);
+        
+        const errorResult = {
+          fileName: fileInfo.name,
+          studentName: this.extractStudentName(fileInfo.name),
           error: error.message,
+          status: 'error',
           timestamp: new Date().toISOString()
-        });
+        };
+        
+        results.push(errorResult);
       }
     }
     
+    console.log(`Processing complete. Success: ${successCount}, Failed: ${files.length - successCount}`);
     return results;
   }
 
@@ -55,11 +81,28 @@ export class FeedbackProcessor {
   async processSingleAssignment(file, options) {
     const { assignmentType = 'general', evaluationCriteria = [] } = options;
     
-    // Extract text content
-    const textContent = await this.extractTextContent(file);
+    if (!file) {
+      throw new Error('No file provided for processing');
+    }
     
-    if (!textContent || textContent.trim().length === 0) {
-      throw new Error('No text content found in file');
+    // Log file info for debugging
+    console.log('Processing file:', {
+      name: file.originalname || file.name || 'unknown',
+      size: file.size || 0,
+      type: file.mimetype || 'unknown'
+    });
+    
+    // Extract text content
+    let textContent;
+    try {
+      textContent = await this.extractTextContent(file);
+      
+      if (!textContent || textContent.trim().length === 0) {
+        throw new Error('File appears to be empty');
+      }
+    } catch (error) {
+      console.error('Error extracting text content:', error);
+      throw new Error(`Could not process file: ${error.message}`);
     }
 
     // Basic text analysis
@@ -105,9 +148,25 @@ export class FeedbackProcessor {
    * Extract text content from various file types
    */
   async extractTextContent(file) {
-    // This would be implemented based on file type
-    // For now, assuming text content is already extracted
-    return file.content || file.text || '';
+    try {
+      // If the file has a buffer, convert it to a string
+      if (file.buffer) {
+        return file.buffer.toString('utf8');
+      }
+      
+      // If the file has a path, read it from the file system
+      if (file.path) {
+        const fs = await import('fs/promises');
+        return await fs.readFile(file.path, 'utf8');
+      }
+      
+      // Fallback to any existing content or text
+      return file.content || file.text || '';
+      
+    } catch (error) {
+      console.error('Error reading file content:', error);
+      throw new Error(`Failed to read file content: ${error.message}`);
+    }
   }
 
   /**

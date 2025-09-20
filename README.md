@@ -34,6 +34,16 @@ A powerful tool designed to help teachers provide high-quality, personalized, an
 - **Sentiment Analysis**: Understanding of tone and approach
 - **Vocabulary Analysis**: Word diversity and complexity assessment
 
+## 📖 User Guide
+
+For detailed instructions on using the Bulk Feedback Generator, please refer to our comprehensive [User Guide](USER_GUIDE.md). The guide covers:
+
+- How to upload and process assignments
+- Understanding the feedback report
+- Interpreting scores and improvement areas
+- Making the most of grammar and style feedback
+- Tips for using feedback effectively
+
 ## 🚀 Quick Start
 
 ### Prerequisites
