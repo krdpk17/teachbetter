@@ -26,13 +26,21 @@ A powerful tool designed to help teachers provide high-quality, personalized, an
 - **CSV**: Spreadsheet-compatible format for further analysis
 - **PDF**: Print-ready reports (via HTML to PDF conversion)
 
-### 🔧 Advanced Features
-- **Intelligent Analysis**: Natural language processing for content analysis
-- **Personalized Feedback**: Tailored suggestions based on assignment type
-- **Error Detection**: Grammar and style issue identification
-- **Readability Assessment**: Flesch Reading Ease scoring
-- **Sentiment Analysis**: Understanding of tone and approach
-- **Vocabulary Analysis**: Word diversity and complexity assessment
+### 🔧 Key Features
+- **Rule-based Analysis**: Uses traditional NLP techniques for content analysis
+- **Grammar and Style**: Identifies common writing issues and suggests improvements
+- **Readability Assessment**: Evaluates text complexity and reading level
+- **Vocabulary Analysis**: Measures word diversity and complexity
+- **Structure Evaluation**: Analyzes essay structure and organization
+- **Feedback Generation**: Provides actionable suggestions for improvement
+
+## 🔍 How It Works
+
+The tool uses a combination of rule-based analysis and traditional NLP techniques to evaluate student work. It focuses on:
+
+- **Text Analysis**: Using libraries like `compromise` and `natural` for linguistic analysis
+- **Pattern Matching**: Identifying common writing issues and structural patterns
+- **Scoring System**: Assigning scores based on predefined criteria for different evaluation dimensions
 
 ## 📖 User Guide
 
@@ -48,7 +56,6 @@ For detailed instructions on using the Bulk Feedback Generator, please refer to 
 
 ### Prerequisites
 - Node.js (v16 or higher)
-- npm or yarn
 
 ### Installation
 
@@ -62,6 +69,18 @@ For detailed instructions on using the Bulk Feedback Generator, please refer to 
    ```bash
    npm install
    ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Run tests**
+   - All tests: `npm test`
+   - Unit tests: `npm run test:unit`
+   - Integration tests: `npm run test:integration`
+   - Compare feedback tests: `npm run test:compare`
+   - Extreme essay comparison: `npm run test:compare-extreme`
 
 ## 🧪 Testing
 

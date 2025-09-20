@@ -2,30 +2,48 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Getting Started](#getting-started)
-3. [Uploading Assignments](#uploading-assignments)
-4. [Understanding the Feedback Report](#understanding-the-feedback-report)
-5. [Interpreting Scores](#interpreting-scores)
-6. [Areas for Improvement](#areas-for-improvement)
-7. [Grammar and Style Feedback](#grammar-and-style-feedback)
-8. [Feedback Suggestions](#feedback-suggestions)
-9. [Tips for Using the Feedback](#tips-for-using-the-feedback)
-10. [Troubleshooting](#troubleshooting)
+2. [How It Works](#how-it-works)
+3. [Getting Started](#getting-started)
+4. [Uploading Assignments](#uploading-assignments)
+5. [Understanding the Feedback Report](#understanding-the-feedback-report)
+6. [Interpreting Scores](#interpreting-scores)
+7. [Areas for Improvement](#areas-for-improvement)
+8. [Grammar and Style Feedback](#grammar-and-style-feedback)
+9. [Feedback Suggestions](#feedback-suggestions)
+10. [Testing and Development](#testing-and-development)
+11. [Troubleshooting](#troubleshooting)
+12. [Limitations](#limitations)
 
 ## Introduction
 
-The Bulk Feedback Generator is a powerful tool designed to help educators provide detailed, constructive feedback on student assignments efficiently. This guide will walk you through using the application and understanding the feedback it generates.
+The Bulk Feedback Generator is a rule-based analysis tool designed to help educators provide detailed, constructive feedback on student assignments efficiently. This guide will walk you through using the application and understanding the feedback it generates.
+
+## How It Works
+
+The Bulk Feedback Generator uses traditional Natural Language Processing (NLP) techniques to analyze student work. It focuses on:
+
+- **Rule-based Analysis**: Uses predefined patterns and linguistic rules to evaluate writing
+- **Multiple Evaluation Dimensions**: Assesses various aspects of writing including structure, clarity, and presentation
+- **Consistent Feedback**: Provides standardized feedback based on objective criteria
+
+Key components of the analysis include:
+- Text parsing and tokenization
+- Pattern matching for common writing issues
+- Vocabulary and sentence structure analysis
+- Rule-based scoring across multiple dimensions
 
 ## Getting Started
 
 1. **Access the Application**
    - Open the Bulk Feedback Generator in your web browser
    - No login is required to start using the tool
+   - For development: Run `npm run dev` to start the local development server
 
 2. **System Requirements**
+   - Node.js v16 or higher (for development)
    - Modern web browser (Chrome, Firefox, Safari, or Edge)
-   - Internet connection
-   - Supported file types: PDF, DOCX, TXT
+   - Internet connection (for initial setup and dependencies)
+   - Supported file types: TXT, PDF, DOCX, DOC
 
 ## Uploading Assignments
 
@@ -126,30 +144,80 @@ Personalized feedback suggestions are provided in three categories:
    - Review the feedback before sharing with students
    - Add personal comments to complement the automated feedback
    - Use the feedback to identify common class-wide issues
+   - Remember that feedback is based on rules and patterns, not AI understanding
 
 2. **For Students**
    - Read all feedback carefully
    - Focus on high-priority items first
    - Use the suggestions to revise your work
-   - Ask for clarification if needed
+   - Ask your instructor for clarification if needed
+   - Note that feedback is generated automatically and may need human interpretation
+
+## Testing and Development
+
+The project includes a comprehensive test suite to ensure reliability:
+
+### Running Tests
+```bash
+# Run all tests
+npm test
+
+# Run unit tests only
+npm run test:unit
+
+# Run integration tests
+npm run test:integration
+
+# Compare feedback between different versions
+npm run test:compare
+
+# Test with extreme essay examples
+npm run test:compare-extreme
+```
+
+### Test Coverage
+Generate a coverage report with:
+```bash
+npm run test:coverage
+```
 
 ## Troubleshooting
 
 **File Upload Issues**
 - Ensure the file is not password protected
 - Check that the file size is under 10MB
-- Verify the file format is supported
+- Verify the file format is supported (TXT, PDF, DOCX, DOC)
+- For development: Check server logs for parsing errors
 
 **Feedback Not Appearing**
-- Check your internet connection
+- Check your internet connection (for web version)
+- Ensure the development server is running (`npm run dev`)
+- Check browser console for JavaScript errors
 - Refresh the page and try again
-- Contact support if the issue persists
 
 **Incorrect Feedback**
-- The tool provides suggestions based on algorithms
+- The tool uses rule-based analysis, not AI understanding
+- Some complex writing patterns may not be recognized
 - Use your professional judgment when applying feedback
-- Report any consistent inaccuracies to help improve the system
+- Report consistent issues on our GitHub repository
+
+## Limitations
+
+1. **Rule-based Analysis**
+   - Feedback is based on predefined patterns and rules
+   - May not catch all nuances of writing
+   - Limited understanding of context and content meaning
+
+2. **Text Processing**
+   - Complex formatting in documents may affect analysis
+   - Handwritten text in scanned documents is not supported
+   - Some special characters or symbols may not be processed correctly
+
+3. **Evaluation Scope**
+   - Focuses on form and structure rather than content accuracy
+   - Limited ability to assess subject-specific knowledge
+   - May flag unusual but correct writing styles
 
 ---
 
-For additional support or to provide feedback, please contact our support team at support@teachbetter.com
+For additional support, bug reports, or to contribute to the project, please visit our [GitHub repository](https://github.com/yourusername/teachbetter).
