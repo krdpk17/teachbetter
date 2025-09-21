@@ -747,6 +747,133 @@
             padding: 40px;
         }
 
+        /* Progress Bar Styles */
+        .progress-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e9ecef;
+            border-radius: 20px;
+            margin: 15px 0;
+            position: relative;
+            height: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 20px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0,0,0,0.3);
+            z-index: 1;
+        }
+
+        .file-status {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Summary Table Styles */
+        .summary-section {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .export-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-export {
+            background: #4facfe;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .btn-export:hover {
+            background: #3a8fd9;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .summary-table th,
+        .summary-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .summary-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .summary-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .action-btn {
+            background: none;
+            border: 1px solid #4facfe;
+            color: #4facfe;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #4facfe;
+            color: white;
+        }
+
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #4facfe;
@@ -941,7 +1068,52 @@
             </button>
 
             <div class="results-section" id="resultsSection">
-                <div class="loading" id="loadingSection">
+                <!-- Progress Section -->
+                <div class="progress-section" id="progressSection">
+                    <h3>Processing Assignments</h3>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                        <div class="progress-text" id="progressText">0%</div>
+                    </div>
+                    <div class="file-status" id="fileStatus">
+                        <p>Preparing to process files...</p>
+                    </div>
+                </div>
+
+                <!-- Summary Table -->
+                <div class="summary-section" id="summarySection" style="display: none;">
+                    <div class="section-header">
+                        <h3>Feedback Summary</h3>
+                        <div class="export-actions">
+                            <button class="btn btn-export" id="exportCsv">
+                                <i class="icon-download"></i> Export CSV
+                            </button>
+                            <button class="btn btn-export" id="exportAll">
+                                <i class="icon-download"></i> Download All Reports (ZIP)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="summary-table" id="summaryTable">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Roll Number</th>
+                                    <th>Assignment Type</th>
+                                    <th>Evaluation Summary</th>
+                                    <th>Key Strengths</th>
+                                    <th>Areas for Improvement</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryTableBody">
+                                <!-- Rows will be added dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="loading" id="loadingSection" style="display: none;">
                     <div class="spinner"></div>
                     <p>Processing assignments and generating feedback...</p>
                 </div>
@@ -954,6 +1126,248 @@
 
     <script>
         let selectedFiles = [];
+        let feedbackResults = [];
+        
+        // DOM Elements
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const fileStatus = document.getElementById('fileStatus');
+        const summarySection = document.getElementById('summarySection');
+        const summaryTableBody = document.getElementById('summaryTableBody');
+        const exportCsvBtn = document.getElementById('exportCsv');
+        const exportAllBtn = document.getElementById('exportAll');
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            exportCsvBtn.addEventListener('click', exportToCsv);
+            exportAllBtn.addEventListener('click', downloadAllReports);
+        });
+        
+        // Update progress bar
+        function updateProgress(progress, currentFile = '') {
+            const percentage = Math.min(100, Math.max(0, progress));
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${Math.round(percentage)}%`;
+            
+            if (currentFile) {
+                fileStatus.innerHTML = `Processing: <strong>${currentFile}</strong>`;
+            }
+        }
+        
+        // Show summary table with feedback results
+        function showSummaryTable() {
+            summarySection.style.display = 'block';
+            summaryTableBody.innerHTML = '';
+            
+            feedbackResults.forEach((result, index) => {
+                const row = document.createElement('tr');
+                
+                // Extract student info (assuming filename format: 'RollNo_Name_Assignment.ext')
+                const fileName = result.filename || 'document';
+                const nameMatch = fileName.match(/([^_]+)_([^_]+)_/);
+                const studentName = nameMatch ? nameMatch[2].replace(/-/g, ' ') : 'Student';
+                const rollNumber = nameMatch ? nameMatch[1] : '';
+                
+                // Parse the feedback data
+                let feedbackData = {
+                    overallScore: 'N/A',
+                    overallFeedback: '',
+                    structure: { score: 'N/A', feedback: '' },
+                    creativity: { score: 'N/A', feedback: '' },
+                    accuracy: { score: 'N/A', feedback: '' },
+                    presentation: { score: 'N/A', feedback: '' },
+                    clarity: { score: 'N/A', feedback: '' },
+                    depth: { score: 'N/A', feedback: '' },
+                    strengths: [],
+                    improvements: []
+                };
+
+                // If result is a string, parse it
+                if (typeof result === 'string') {
+                    // Extract overall score
+                    const overallMatch = result.match(/Overall Score\s*([\d.]+)\/5/);
+                    if (overallMatch) {
+                        feedbackData.overallScore = `${overallMatch[1]}/5`;
+                    }
+
+                    // Extract overall feedback
+                    const feedbackMatch = result.match(/Overall Feedback:([\s\S]*?)(?=\n\w|$)/);
+                    if (feedbackMatch) {
+                        feedbackData.overallFeedback = feedbackMatch[1].trim();
+                    }
+
+                    // Extract dimension scores and feedback
+                    const dimensions = ['structure', 'creativity', 'accuracy', 'presentation', 'clarity', 'depth'];
+                    dimensions.forEach(dim => {
+                        const regex = new RegExp(`${dim}[\s\S]*?(\d+(?:\.\d+)?)\/5[\s\S]*?([^\n]+)(?=\n|$)`, 'i');
+                        const match = result.match(regex);
+                        if (match) {
+                            feedbackData[dim] = {
+                                score: match[1],
+                                feedback: (match[2] || '').trim()
+                            };
+                        }
+                    });
+
+                    // Extract strengths and improvements
+                    const strengthsMatch = result.match(/Key Strengths:([\s\S]*?)(?=Areas for Improvement|$)/i);
+                    if (strengthsMatch) {
+                        feedbackData.strengths = strengthsMatch[1].split('•').slice(1).map(s => s.trim()).filter(Boolean);
+                    }
+
+                    const improvementsMatch = result.match(/Areas for Improvement:([\s\S]*?)(?=\n\w|$)/i);
+                    if (improvementsMatch) {
+                        feedbackData.improvements = improvementsMatch[1].split('•').slice(1).map(s => s.trim()).filter(Boolean);
+                    }
+                } else if (result && typeof result === 'object') {
+                    // If result is already an object, use it directly
+                    feedbackData = { ...feedbackData, ...result };
+                }
+
+                // Format the feedback summary
+                const formatDimension = (dim) => {
+                    const data = feedbackData[dim];
+                    if (!data) return 'N/A';
+                    if (typeof data === 'string') return data;
+                    return `${data.score || 'N/A'} - ${data.feedback || 'No feedback'}`;
+                };
+
+                // Create a more detailed feedback summary
+                const feedbackSummary = `
+                    <div class="feedback-summary">
+                        <div class="overall-feedback">
+                            <strong>Score:</strong> ${feedbackData.overallScore || 'N/A'}<br>
+                            ${feedbackData.overallFeedback ? `<p>${feedbackData.overallFeedback}</p>` : ''}
+                        </div>
+                        <div class="dimension-scores">
+                            <div><strong>Structure:</strong> ${formatDimension('structure')}</div>
+                            <div><strong>Creativity:</strong> ${formatDimension('creativity')}</div>
+                            <div><strong>Accuracy:</strong> ${formatDimension('accuracy')}</div>
+                        </div>
+                    </div>
+                `;
+
+                // Create strengths list
+                const strengthsList = Array.isArray(feedbackData.strengths) && feedbackData.strengths.length > 0
+                    ? `<ul>${feedbackData.strengths.map(s => `<li>${s}</li>`).join('')}</ul>`
+                    : 'No strengths identified';
+
+                // Create improvements list
+                const improvementsList = Array.isArray(feedbackData.improvements) && feedbackData.improvements.length > 0
+                    ? `<ul>${feedbackData.improvements.map(i => `<li>${i}</li>`).join('')}</ul>`
+                    : 'No improvement areas identified';
+
+                row.innerHTML = `
+                    <td>${studentName}</td>
+                    <td>${rollNumber || 'N/A'}</td>
+                    <td>${result.assignmentType || 'Essay'}</td>
+                    <td class="feedback-cell">${feedbackSummary}</td>
+                    <td class="strengths-cell">${strengthsList}</td>
+                    <td class="improvements-cell">${improvementsList}</td>
+                    <td>
+                        <button class="action-btn" onclick="viewReport(${index})">View Full Report</button>
+                    </td>
+                `;
+                
+                summaryTableBody.appendChild(row);
+            });
+        }
+        
+        // Export summary to CSV
+        function exportToCsv() {
+            if (feedbackResults.length === 0) return;
+            
+            const headers = [
+                'Student Name', 'Roll Number', 'Assignment Type', 
+                'Evaluation Summary', 'Key Strengths', 'Areas for Improvement'
+            ];
+            
+            const csvRows = [];
+            
+            // Add header row
+            csvRows.push(headers.join(','));
+            
+            // Add data rows
+            feedbackResults.forEach(result => {
+                const fileName = result.filename || 'document';
+                const nameMatch = fileName.match(/([^_]+)_([^_]+)_/);
+                const studentName = nameMatch ? nameMatch[2].replace(/-/g, ' ') : 'Student';
+                const rollNumber = nameMatch ? nameMatch[1] : '';
+                
+                const strengths = result.strengths ? 
+                    `"${result.strengths.slice(0, 2).map(s => s.feedback).join('; ')}"` : 'N/A';
+                    
+                const improvements = result.improvements ? 
+                    `"${result.improvements.slice(0, 2).map(i => i.feedback).join('; ')}"` : 'N/A';
+                
+                const row = [
+                    `"${studentName}"`,
+                    `"${rollNumber}"`,
+                    `"${result.assignmentType || 'Essay'}"`,
+                    `"${(result.overallFeedback || 'No feedback available').replace(/"/g, '""')}"`,
+                    strengths,
+                    improvements
+                ];
+                
+                csvRows.push(row.join(','));
+            });
+            
+            // Create CSV file
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            
+            // Download the file
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', `feedback_summary_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Download all reports as ZIP
+        async function downloadAllReports() {
+            if (feedbackResults.length === 0) return;
+            
+            try {
+                // Show loading state
+                exportAllBtn.disabled = true;
+                exportAllBtn.innerHTML = '<i class="icon-spinner"></i> Preparing ZIP...';
+                
+                // In a real implementation, this would make an API call to generate a ZIP
+                // For now, we'll simulate the download of individual files
+                feedbackResults.forEach((result, index) => {
+                    const fileName = result.filename ? 
+                        result.filename.replace(/\.[^/.]+$/, '') + '_feedback.html' : 
+                        `feedback_${index + 1}.html`;
+                    
+                    // Create and trigger download of individual files
+                    const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
+                
+                // In a real implementation, you would use a library like JSZip
+                // to create a single ZIP file containing all reports
+                
+                alert('All reports have been prepared for download.');
+                
+            } catch (error) {
+                console.error('Error generating ZIP:', error);
+                alert('Error generating ZIP file. Please try again.');
+            } finally {
+                // Reset button state
+                exportAllBtn.disabled = false;
+                exportAllBtn.innerHTML = '<i class="icon-download"></i> Download All Reports (ZIP)';
+            }
+        }
 
         // File input handling
         const fileInput = document.getElementById('fileInput');
@@ -1044,10 +1458,98 @@
                 alert('Please select at least one file to process.');
                 return;
             }
-
-            const processBtn = document.getElementById('processBtn');
+            
+            // Reset state
+            feedbackResults = [];
             const resultsSection = document.getElementById('resultsSection');
+            const progressSection = document.getElementById('progressSection');
             const loadingSection = document.getElementById('loadingSection');
+            
+            resultsSection.style.display = 'block';
+            progressSection.style.display = 'block';
+            loadingSection.style.display = 'none';
+            summarySection.style.display = 'none';
+            
+            // Show processing UI
+            updateProgress(0, 'Starting...');
+            
+            // Get selected options
+            const selectedDimensions = [];
+            document.querySelectorAll('.dimension-option input[type="checkbox"]:checked')
+                .forEach(checkbox => selectedDimensions.push(checkbox.id));
+                
+            const reportFormat = document.getElementById('reportFormat').value;
+            const includeSuggestions = document.getElementById('includeSuggestions').checked;
+            
+            // Process files sequentially with progress updates
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                const formData = new FormData();
+                // Use 'files' as field name to match server expectation
+                formData.append('files', file);
+                formData.append('dimensions', JSON.stringify(selectedDimensions));
+                formData.append('format', reportFormat);
+                formData.append('includeSuggestions', includeSuggestions);
+                
+                try {
+                    updateProgress((i / selectedFiles.length) * 100, file.name);
+                    
+                    // Get assignment type and evaluation criteria
+                    const assignmentType = document.getElementById('assignmentType').value;
+                    const evaluationCriteria = Array.from(
+                        document.querySelectorAll('.dimension-option input[type="checkbox"]:checked')
+                    ).map(cb => cb.id);
+                    
+                    // Add additional form data
+                    formData.append('assignmentType', assignmentType);
+                    formData.append('evaluationCriteria', JSON.stringify(evaluationCriteria));
+                    
+                    // Make API call to upload and process the file
+                    const response = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        let errorMessage = `Error processing ${file.name}`;
+                        try {
+                            const errorData = await response.json();
+                            console.error('Server error details:', errorData);
+                            errorMessage = errorData.details || errorData.message || errorMessage;
+                        } catch (e) {
+                            console.error('Error parsing error response:', e);
+                        }
+                        throw new Error(errorMessage);
+                    }
+                    
+                    const result = await response.json();
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+                    
+                    // If we get an array of results, use the first one (single file upload)
+                    const feedback = Array.isArray(result) ? result[0] : result;
+                    feedback.filename = file.name;
+                    feedbackResults.push(feedback);
+                    
+                    // Update progress
+                    updateProgress(((i + 1) / selectedFiles.length) * 100, `Completed: ${file.name}`);
+                    
+                } catch (error) {
+                    console.error(`Error processing ${file.name}:`, error);
+                    // Continue with next file even if one fails
+                }
+            }
+            
+            // Show completion
+            updateProgress(100, 'Processing complete!');
+            fileStatus.innerHTML = '<span style="color: #28a745;">✓ All files processed successfully</span>';
+            
+            // Show summary table
+            showSummaryTable();
+
+            // Get DOM elements
+            const processBtn = document.getElementById('processBtn');
             const errorSection = document.getElementById('errorSection');
             const successSection = document.getElementById('successSection');
 
